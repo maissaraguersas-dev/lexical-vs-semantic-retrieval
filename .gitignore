@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Experiment scratch
+*.log
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local model caches (fastembed stores under ~/.cache; never commit models)
+*.onnx
+local_cache/
+
+# Local LaTeX build output (make paper-body compiles into paper/build/)
+paper/build/

@@ -1,0 +1,270 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{needspace}
+
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\widowpenalty=10000
+\clubpenalty=10000
+
+\definecolor{accent}{HTML}{1E3A5F}
+
+% hyperref last among content packages
+\usepackage[
+    colorlinks=true,
+    linkcolor=accent,
+    citecolor=darkgray,
+    urlcolor=accent,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    unicode=true
+]{hyperref}
+
+\hypersetup{
+    pdftitle={Keyword Matching versus Dense Semantics: An Empirical Comparison of Lexical and Embedding-Based Retrieval on a Small Curated Knowledge Base},
+    pdfauthor={Maissara Guersas},
+    pdfsubject={Information retrieval evaluation: BM25 and TF-IDF versus dense sentence embeddings},
+    pdfkeywords={information retrieval, BM25, TF-IDF, dense retrieval, sentence embeddings, semantic search, nDCG, error analysis}
+}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pkg}[1]{\texttt{#1}}
+
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{16pt plus 4pt minus 2pt}{8pt plus 2pt minus 1pt}
+\titlespacing*{\subsection}{0pt}{12pt plus 3pt minus 2pt}{6pt plus 2pt minus 1pt}
+
+\begin{document}
+
+% Custom compact title block (no \maketitle; the full-page cover is
+% generated separately via HTML/Playwright and merged as page 0).
+\begin{center}
+    {\LARGE\bfseries Keyword Matching versus Dense Semantics:\\[4pt]
+     An Empirical Comparison of Lexical and Embedding-Based Retrieval\\[2pt]
+     on a Small Curated Knowledge Base\par}
+    \vspace{10pt}
+    {\large Maissara Guersas\par}
+    \vspace{2pt}
+    {\small Independent research note \textbullet{} November 2026 \textbullet{}
+     \code{github.com/maissaraguersas-dev/lexical-vs-semantic-retrieval}\par}
+\end{center}
+\vspace{6pt}
+
+\begin{center}
+\begin{minipage}{0.92\columnwidth}
+\small
+\textbf{Abstract.} Keyword (lexical) retrieval and dense embedding retrieval fail in complementary ways, but practitioners rarely see both failure modes quantified on the same small corpus. We present a controlled comparison of three retrievers---Okapi BM25, TF-IDF with cosine similarity, and dense retrieval with the \code{BAAI/bge-small-en-v1.5} sentence-embedding model---on a purpose-built knowledge base of 100 short technical notes from a fictional developer-cloud helpdesk, evaluated with 36 natural-language queries in three categories: exact-term (lexical), paraphrase (semantic), and ambiguous/multi-hop. All experiments are fully reproducible from a public repository; every number in this paper is a measured output of the evaluation harness. Results show a sharp category interaction: on exact-term queries all three retrievers achieve a perfect Precision@1 of 1.000, while on paraphrase queries lexical retrieval collapses (BM25 P@1 = 0.250, MRR@10 = 0.267) and dense retrieval dominates (P@1 = 0.667, MRR@10 = 0.783). Overall, dense retrieval wins 16 of 36 queries against BM25 on first-relevant-document rank, loses 3, and ties 17, finishing with nDCG@10 of 0.760 versus 0.516 (BM25) and 0.530 (TF-IDF)---at the cost of a query latency of 8.49\,ms versus 0.20\,ms on a single CPU core. Qualitative error analysis shows the three BM25 wins are all cases where verbatim phrasing echoes or exact identifiers anchor the answer, while dense failures concentrate on queries whose wording drifts topic-general. We conclude with practical guidance: diagnose the query distribution first, treat dense retrieval as the better default for heterogeneous traffic, and consider reciprocal-rank fusion to hedge both failure modes.
+
+\vspace{4pt}
+\textbf{Keywords:} information retrieval; BM25; TF-IDF; dense retrieval; sentence embeddings; semantic search; precision@k; recall@k; nDCG; error analysis
+\end{minipage}
+\end{center}
+\vspace{4pt}
+
+\section{Introduction}\label{sec:intro}
+
+Every search system embodies a bet about how questions relate to answers. Lexical retrieval systems---from classical TF-IDF vector-space models to modern probabilistic rankers such as BM25---bet that the words a person types will overlap with the words in the document that answers them. Dense retrieval systems bet differently: they embed queries and documents into a shared vector space where semantic proximity, not surface overlap, determines ranking. Neither bet is universally right, and the literature that compares them tends to test on web-scale corpora with millions of passages, where the trade-offs are smoothed by volume.
+
+Yet a very large fraction of real search problems look nothing like the web. Internal knowledge bases, product FAQs, support wikis, and documentation sites commonly hold tens to thousands of short documents, written by one team, in one voice, with consistent terminology. On corpora of this size, the deployment decision between a lexical retriever and an embedding-based retriever is genuinely open: both are fast, both are trivially deployable, and both have failure modes that a small corpus will not average away. The question of which system to ship deserves an answer measured on data shaped like the actual deployment, not extrapolated from MS MARCO.
+
+This paper provides such a measurement. We built a 100-document knowledge base in a single technical domain (a fictional developer-cloud platform helpdesk), deliberately mixing documents that state facts with precise identifiers (error codes, header names, CLI commands) and documents that explain concepts in prose (idempotency, cardinality, blue-green deployments). We wrote 36 information needs as natural-language queries and grouped them into three categories designed to stress each bet: \textbf{lexical} queries containing the exact identifiers their answers use, \textbf{semantic} queries that paraphrase their answers with no distinctive term overlap, and \textbf{ambiguous} queries that legitimately match several documents or require combining two notes. We then ran three retrievers---BM25, TF-IDF, and dense embeddings from \code{BAAI/bge-small-en-v1.5}---over the corpus and evaluated Precision@k, Recall@k, MRR@10, and nDCG@10 for $k \in \{1, 3, 5, 10\}$, overall and per category, plus end-to-end query latency.
+
+Three findings summarize the contribution. First, the category interaction is dramatic: lexical retrieval is \emph{perfect} on identifier queries (P@1 = 1.000 across all three retrievers) and \emph{broken} on paraphrase queries (BM25 P@1 = 0.250; dense 0.667). Second, on this corpus dense retrieval is the dominant overall choice (nDCG@10 = 0.760 vs.\ 0.516/0.530), but it is not invincible: it loses 3 of 36 head-to-head first-relevant-rank comparisons to BM25, all three involving verbatim phrasing echoes between question and answer. Third, cost asymmetry is real but small at this scale: dense queries take ${\sim}8.5$\,ms end-to-end versus ${\sim}0.2$\,ms for BM25---irrelevant for human-facing search on small corpora, relevant at fleet scale. All code, data, and per-query outputs are released for reproduction.
+
+Section~\ref{sec:related} situates the work in the retrieval literature, Section~\ref{sec:setup} specifies the dataset and experimental setup, Section~\ref{sec:results} reports measured results, Section~\ref{sec:analysis} analyzes errors qualitatively, and Sections~\ref{sec:limits} and~\ref{sec:conclusion} discuss limitations and conclude.
+
+\section{Background and Related Work}\label{sec:related}
+
+\textbf{Lexical retrieval.} The vector-space model represents queries and documents as weighted term vectors and ranks by cosine similarity; TF-IDF weighting---term frequency damped by document frequency---is its classical instantiation~\cite{salton1975}. BM25 reframes retrieval probabilistically as estimating relevance from query-term occurrences, with two tunable parameters for term-frequency saturation ($k_1$) and document-length normalization ($b$)~\cite{robertson2009}. BM25 remains the strongest known baseline without learned parameters and is the default first ranker in most production search stacks~\cite{manning2008}. Both approaches share the same fundamental limitation: they can only match surface forms. If a user asks about a server refusing requests because it fires them too fast and the answer document says ``rate limit,'' no weighting scheme can bridge the gap---the vocabulary mismatch problem has been documented since the earliest retrieval experiments.
+
+\textbf{Dense retrieval.} Latent semantic analysis was the first attempt to overcome vocabulary mismatch by folding term--document matrices into low-rank latent spaces~\cite{deerwester1990}. Modern dense retrieval descends instead from neural language representations: word embeddings~\cite{mikolov2013,pennington2014} made semantics geometric, Sentence-BERT made sentence-level embedding practical at scale~\cite{reimers2019}, and dense passage retrieval demonstrated that dual-encoder similarity could rival BM25 on open-domain question answering~\cite{karpukhin2020}. The BGE family of embedding models used in this paper was trained with contrastive learning on large paired corpora and is a widely used open-weight choice for semantic search~\cite{xiao2023}.
+
+\textbf{Benchmarks and the scale gap.} Public benchmarks shaped the field's intuition about lexical-versus-dense trade-offs. MS MARCO~\cite{bajaj2016} and Natural Questions~\cite{kwiatkowski2019} drove the dense-retrieval revolution at web scale; BEIR~\cite{thakur2021} then showed, across 18 heterogeneous tasks, that zero-shot dense retrievers often \emph{lose} to BM25 out of domain---a calibration the field badly needed. What the public benchmarks under-represent is the small, homogeneous, curated corpus: $10^2$--$10^4$ documents, one domain, one authorial voice, queries written by the same community that reads the answers. BEIR's smallest corpus has 19K documents; internal knowledge bases are two to three orders of magnitude smaller, where lexical statistics such as document frequency are noisy and embedding-space neighborhoods are dense. Our study is deliberately scoped to that regime: not to claim generalizable leaderboard numbers, but to measure the two failure modes on a corpus shaped like the deployments practitioners actually make.
+
+\textbf{Evaluation methodology.} We adopt the standard Cranfield-style evaluation: a fixed corpus, a fixed query set with graded relevance judgments (qrels), and rank-sensitive metrics. Precision@k and Recall@k characterize set overlap at fixed depth; MRR@10 captures how high the first relevant document appears; nDCG@10 uses graded gains to reward ordering quality~\cite{manning2008}. All four are macro-averaged over queries, per category and overall.
+
+\section{Dataset and Experimental Setup}\label{sec:setup}
+
+\subsection{Corpus}
+
+We constructed a corpus of 100 short notes for the fictional \textbf{Nimbus DevCloud} developer platform, written as a helpdesk knowledge base. Each note is 2--3 sentences (mean 29.6 tokens, range 20--43, after lowercasing and tokenizing on \code{[a-z0-9\_]+}). Notes are organized in ten clusters of ten: authentication and API keys; rate limits and quotas; errors and troubleshooting; webhooks and events; SDKs and clients; databases and storage; deployments and builds; observability; networking; billing and plans.
+
+The design is intentional in two ways. First, \textbf{terminology duality}: roughly half the notes state facts through precise identifiers (\code{ERR\_GATEWAY\_TIMEOUT}, \code{X-RateLimit-Remaining}, \code{Idempotency-Key}, \code{nimbus db migrate}), while the other half explain concepts whose canonical terms appear nowhere in a naive user's question (metric \emph{cardinality}, \emph{read-your-writes} consistency, \emph{expand-contract} migrations). Second, \textbf{cluster adjacency}: within each cluster, documents share topic vocabulary (ten auth notes all mention keys or tokens), which punishes retrievers that match topic words instead of the specific note---a realistic difficulty for small homogeneous corpora. Each note carries a stable ID (\code{D001}--\code{D100}), a title, body text, and tags. For indexing we use title and body text concatenated.
+
+\subsection{Query Set and Relevance Judgments}
+
+We wrote 36 queries (mean 11.6 tokens, range 5--20) as authentic-seeming information needs, 12 per category:
+
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+    \item \textbf{Lexical (12):} the query contains the distinctive surface form its answer uses---an error code (``How do I debug a 504 \code{ERR\_GATEWAY\_TIMEOUT}?''), a header name (``How do I interpret \code{X-RateLimit-Remaining}?''), or a CLI command (``How do I run a schema migration with \code{nimbus db migrate}?'').
+    \item \textbf{Semantic (12):} the query paraphrases the answer with no distinctive term overlap---e.g., ``My script fires requests too fast and the server keeps refusing them'' (answer: the rate-limit notes), ``Are webhook notifications guaranteed to arrive exactly once?'' (answer: the at-least-once delivery note), ``Our metrics bill exploded after we started labeling every series with the customer id'' (answer: the metric-cardinality note).
+    \item \textbf{Ambiguous (12):} boundary or multi-hop needs that legitimately match several documents or require combining two notes---e.g., ``How should I make my retry logic safe?'' (retries + idempotency + 429 backoff), ``The deploy went green but users are seeing errors'' (health checks + rollback + triage), ``If a bug triples our usage overnight, what happens to the bill and to the service?'' (overage policy + spend alerts + metering).
+\end{itemize}
+
+Every query carries graded relevance judgments (qrels): grade 2 means highly relevant (a document that directly answers the need); grade 1 means partially relevant (a useful supporting or adjacent document). The set contains 74 query--document pairs (42 grade-2, 32 grade-1); 6 queries have one relevant document, 22 have two, and 8 have three (mean 2.06). Category pair counts: lexical 22, semantic 21, ambiguous 31. Judgments follow one deliberate discipline: a judgment must be defensible from the document text alone---a grade-2 document answers the question; a grade-1 document is the one a support engineer would also hand you.
+
+\subsection{Retrievers}
+
+All retrievers share the interface \code{search(query, k) -> ranked document IDs}, over the same 100 documents, with ties broken deterministically by corpus order (stable sort), so every run is bit-reproducible.
+
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+    \item \textbf{BM25} (\code{bm25}): Okapi BM25 from the \pkg{rank-bm25} 0.2.2 library, default parameters ($k_1 = 1.5$, $b = 0.75$), tokenized with the shared lowercase \code{[a-z0-9\_]+} pattern that keeps identifiers (\code{err\_gateway\_timeout}) and numbers (\code{429}) intact.
+    \item \textbf{TF-IDF} (\code{tfidf}): scikit-learn 1.5.2 \code{TfidfVectorizer} (lowercased, default word tokenization, L2-normalized vectors); cosine similarity is the dot product of normalized vectors.
+    \item \textbf{Dense} (\code{dense}): \code{BAAI/bge-small-en-v1.5} (384 dimensions) via \pkg{fastembed} 0.9.1---local ONNX inference, no network access and no paid API at query time. Documents are embedded as passages; queries use the model's dedicated query-encoding path (the BGE query prefix). Similarity is cosine over L2-normalized vectors. If the embedding library or model weights are unavailable, the harness automatically falls back to a deterministic scikit-learn LSA variant (TF-IDF reduced by TruncatedSVD, random seed 42) so the benchmark always runs; the backend actually used is recorded in \code{results/metrics.json}.
+\end{enumerate}
+
+\subsection{Metrics and Protocol}
+
+For each query we rank the full corpus and score depth $k \in \{1, 3, 5, 10\}$. Binary metrics treat a document as relevant iff its grade is at least 1: \textbf{Precision@k} $=$ $|$relevant in top-$k$$|$ $/\ k$; \textbf{Recall@k} $=$ $|$relevant in top-$k$$|$ $/\ |$all relevant$|$; \textbf{MRR@10} $=$ $1/\text{rank}$ of the first relevant document within the top 10 (0 if none). \textbf{nDCG@10} uses graded gains $2^{\text{grade}} - 1$ with logarithmic discount, normalized by the ideal ordering. Metrics are macro-averaged over all 36 queries (overall) and within each category. Latency is measured end-to-end per query (including embedding for dense) on a single CPU, after a warm-up call, reporting mean, median (p50), and p95 over the 36 queries. The full protocol is one command: \code{python src/evaluate.py}.
+
+\section{Results}\label{sec:results}
+
+\subsection{Overall Metrics}
+
+Table~\ref{tab:overall} reports overall metrics. Dense retrieval dominates every metric at every depth: $+0.194$ Precision@1, $+0.245$ Recall@5, $+0.222$ MRR@10, and $+0.244$ nDCG@10 over BM25. TF-IDF is a slightly better lexical baseline than BM25 on this corpus (MRR@10 0.604 vs.\ 0.591; nDCG@10 0.530 vs.\ 0.516)---a reminder that BM25's hyperparameters are not automatically optimal on very short documents---but the difference is second-order next to the lexical-versus-dense gap.
+
+\begin{table}[htbp]
+\centering
+\caption{Overall results (36 queries, 100-document corpus). Bold marks the best value per column.}
+\label{tab:overall}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l cccccccccc}
+\toprule
+Retriever & P@1 & P@3 & P@5 & P@10 & R@1 & R@3 & R@5 & R@10 & MRR & nDCG \\
+\midrule
+BM25 & 0.528 & 0.250 & 0.200 & 0.111 & 0.287 & 0.389 & 0.505 & 0.556 & 0.591 & 0.516 \\
+TF-IDF & 0.528 & 0.278 & 0.217 & 0.114 & 0.287 & 0.421 & 0.542 & 0.569 & 0.604 & 0.530 \\
+Dense (bge-small) & \textbf{0.722} & \textbf{0.398} & \textbf{0.294} & \textbf{0.169} & \textbf{0.421} & \textbf{0.625} & \textbf{0.750} & \textbf{0.843} & \textbf{0.812} & \textbf{0.760} \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Head-to-head on first-relevant-document rank, dense wins 16 queries, BM25 wins 3, and 17 tie. Dense placed the first relevant document in the top 3 for 32 of 36 queries; BM25 managed 21.
+
+\subsection{Per-Category Breakdown}
+
+Table~\ref{tab:category} decomposes the results by query category, where the design of Section~\ref{sec:setup} pays off.
+
+\begin{table}[htbp]
+\centering
+\caption{Per-category results (12 queries per category). Bold marks the best value per column within each block.}
+\label{tab:category}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} ll cccccc}
+\toprule
+Category & Retriever & P@1 & P@3 & P@5 & P@10 & MRR & nDCG \\
+\midrule
+lexical & BM25 & 1.000 & 0.472 & 0.300 & 0.158 & 1.000 & \textbf{0.927} \\
+lexical & TF-IDF & 1.000 & 0.472 & 0.317 & 0.158 & 1.000 & \textbf{0.933} \\
+lexical & Dense & 1.000 & 0.500 & 0.333 & 0.183 & 1.000 & 0.917 \\
+\addlinespace[2pt]
+semantic & BM25 & 0.250 & 0.111 & 0.083 & 0.050 & 0.267 & 0.234 \\
+semantic & TF-IDF & 0.250 & 0.111 & 0.100 & 0.058 & 0.297 & 0.255 \\
+semantic & Dense & \textbf{0.667} & \textbf{0.306} & \textbf{0.233} & \textbf{0.125} & \textbf{0.783} & \textbf{0.733} \\
+\addlinespace[2pt]
+ambiguous & BM25 & 0.333 & 0.167 & 0.217 & 0.125 & 0.505 & 0.388 \\
+ambiguous & TF-IDF & 0.333 & 0.250 & 0.233 & 0.125 & 0.516 & 0.402 \\
+ambiguous & Dense & \textbf{0.500} & \textbf{0.389} & \textbf{0.317} & \textbf{0.200} & \textbf{0.654} & \textbf{0.631} \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+The lexical category is the surprise worth dwelling on: \textbf{all three retrievers achieve P@1 = 1.000 and MRR@10 = 1.000.} With a distinctive identifier in the query, even the embedding model finds the right note first; modern contrastively trained encoders evidently do not lose exact-match ability on a 100-document corpus. The residual differences show up in ordering depth: TF-IDF edges out dense on graded ordering (nDCG@10 0.933 vs.\ 0.917), and the lexical rankers place the second relevant document more tightly on several queries (e.g., Q11's auto-disable/retry pair). When the answer is anchored by an exact form, term matching remains the cleanest instrument.
+
+The semantic category is the mirror image, and the gap is not incremental---it is structural. BM25 and TF-IDF place the first relevant document first for only 3 of 12 paraphrase queries (P@1 = 0.250) and rarely recover deeper (P@10 = 0.050--0.058, R@10 = 0.292--0.333); dense answers 8 of 12 at rank 1 (P@1 = 0.667) and lifts Recall@10 to 0.750. No parameter tuning of a term-overlap ranker can fix this; the terms simply do not overlap.
+
+The ambiguous category sits between the extremes and shows the most mixed behavior: dense wins on average (nDCG@10 0.631 vs.\ 0.388/0.402) but cedes exactly the three queries BM25 wins overall (Section~\ref{sec:analysis}). Ambiguous, multi-hop needs are where retrieval choice changes individual outcomes, not just averages.
+
+\subsection{Latency}
+
+\begin{table}[htbp]
+\centering
+\caption{End-to-end query latency (36 queries, single CPU, warm cache; dense includes query embedding).}
+\label{tab:latency}
+\small
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}} l ccc}
+\toprule
+Retriever & Mean (ms) & p50 (ms) & p95 (ms) \\
+\midrule
+BM25 & 0.20 & 0.21 & 0.25 \\
+TF-IDF & 0.35 & 0.35 & 0.42 \\
+Dense (bge-small) & 8.49 & 6.30 & 32.90 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Dense retrieval is ${\sim}30\times$ slower in the median case (${\sim}43\times$ by mean; Table~\ref{tab:latency}), entirely due to the fixed cost of one forward pass through the embedding model (${\sim}6$\,ms for a single query; scoring 100 precomputed vectors is negligible). At this corpus scale every option is instantaneous by human standards; the latency asymmetry only becomes an architecture decision at high query rates or in tight in-process budgets. The asymmetry that does matter at any scale is the \emph{indexing} asymmetry: adding one note to the corpus costs a microsecond for BM25 and one embedding inference (${\sim}10$\,ms) for dense.
+
+\section{Discussion and Error Analysis}\label{sec:analysis}
+
+\subsection{The Two Failure Modes, by Name}
+
+The per-category tables operationalize two classical failure modes. \textbf{Vocabulary mismatch} (user words differ from document words) is what breaks lexical retrieval on semantic queries: BM25 ranks the metric-cardinality note 32nd for ``our metrics bill exploded after we started labeling every series with the customer id,'' because the note says \emph{cardinality} and \emph{storage cost}, never \emph{bill} or \emph{exploded}. \textbf{Vocabulary over-specificity}---the mirror failure---is what costs dense retrieval its three losses: when the query echoes the document's exact phrasing (``credentials are valid but not allowed''), the embedding model reads the query as a \emph{topic} (``authorization problem'') and spreads rank over the whole auth cluster, while BM25 locks onto the verbatim match.
+
+\subsection{Where Dense Loses: The Three BM25 Wins}
+
+All three dense losses involve ambiguous queries:
+
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+    \item \textbf{Q30---``The API says I'm not allowed, but my token is definitely valid. Why?''} The 401-vs-403 note is BM25's rank 1 (the query echoes its ``valid but not allowed'' wording); dense places it 8th and demotes the scopes note from BM25's 19th to 48th, preferring a diffuse set of auth-cluster notes.
+    \item \textbf{Q26---``The deploy went green but users are seeing errors. What do I check?''} BM25's exact matches on deploy/error tokens put the rollback note at rank 1; dense's first relevant document appears at rank 3. Notably, dense finds the health-checks note (BM25: rank 49) at rank 5---it compensates differently rather than strictly worse across all relevant documents.
+    \item \textbf{Q27---``Which credentials should a background worker running on a server use?''} The service-tokens note contains ``server'' and ``worker'' verbatim; BM25 rank 2 vs.\ dense rank 3.
+\end{enumerate}
+
+The pattern is consistent: dense retrieval loses when question and answer share distinctive wording, because the embedding space organizes by \emph{topic}, and within a ten-document topic cluster every document is close to every other. On a small homogeneous corpus, topic-level similarity is necessary but not sufficient.
+
+\subsection{Where Dense Wins: Paraphrase as Translation}
+
+The semantic category's dense wins are large and repeatable: rank $32 \to 1$ (metric cardinality), $20 \to 1$ (alert fatigue and paging), $21 \to 1$ (leaked tokens), $13 \to 2$ (point-in-time recovery), $17 \to 2$ (rate limiting), $28 \to 5$ (backup durability). In each case the question is phrased in operator language (``bad migration,'' ``exact second,'' ``stale numbers'') while the documentation uses canonical systems vocabulary (``PITR,'' ``WAL replay,'' ``replica lag''). The embedding model acts as a learned translation layer between those registers---precisely the capability lexical retrieval lacks by construction.
+
+\subsection{The Tie Mass and What Hybridization Would Buy}
+
+Seventeen of 36 head-to-heads tie, and dense's median advantage within the semantic category (twelve rank positions on first relevant document) coexists with BM25's precise anchoring on identifier queries. This is the textbook case for \textbf{reciprocal rank fusion}~\cite{cormack2009}: concatenating the two rankings with a small fusion constant would capture dense's paraphrase coverage and BM25's exact-form anchoring without any model training. We leave hybrid fusion as future work (Section~\ref{sec:limits}) but note that the per-category tables let a practitioner predict from their own query mix whether the added complexity pays.
+
+\subsection{Reading P@1 Alone Would Mislead}
+
+On the lexical category, all three systems tie at P@1 $=$ MRR@10 $=$ 1.000, yet nDCG@10 separates them by up to 0.016---and that ordering difference is exactly what a user scanning the top 3--5 results experiences. Single-position metrics hide ordering quality; graded metrics expose it. Small-corpus evaluations should always report both.
+
+\section{Limitations and Future Work}\label{sec:limits}
+
+\textbf{Scale.} One hundred documents and 36 queries cannot support significance testing with useful power; per-category deltas of 0.1--0.5 nDCG on 12 queries are directional, not inferential. The corpus is also small enough that embedding-space neighborhoods are unusually dense, which may flatter the dense retriever relative to deployments at $10^4$--$10^6$ documents. Conversely, lexical document-frequency statistics are noisy at this scale, which may disfavor BM25. Both biases are inherent to the regime we study, and we report them openly rather than average them away.
+
+\textbf{Authoring bias.} The corpus author, query author, and judgment author are the same person. The qrel discipline (grade 2 must be answerable from the text alone) mitigates but cannot eliminate this; an independent annotator study is the obvious strengthening step.
+
+\textbf{One embedding model, one language, one domain.} We test a single 384-dimensional open-weight encoder in English on a single domain. Larger or domain-tuned encoders could shift the dense curve upward; weaker ones (or the LSA fallback) shift it toward lexical performance. The harness accepts any \pkg{fastembed}-supported model with a one-line change, so replication sweeps are cheap.
+
+\textbf{No tuning, no reranking, no hybrid.} We ran BM25 at library defaults and TF-IDF at scikit-learn defaults; neither was tuned on the query set (tuning on 36 queries would overfit trivially). A cross-encoder reranker, query expansion, and reciprocal-rank fusion are all unimplemented by design---the study isolates the two base retrieval bets. Future work: (1) add RRF fusion and measure whether it dominates both parents per category; (2) sweep embedding models to plot quality-versus-latency frontiers at this scale; (3) replicate on a second corpus with different authorship to break the single-annotator dependency; (4) scale the corpus $10\times$ by paraphrase augmentation to locate the crossover where lexical statistics stabilize.
+
+\section{Conclusion}\label{sec:conclusion}
+
+On a small curated technical corpus shaped like the knowledge bases most teams actually run, the keyword-versus-embeddings decision is a decision about \emph{query distribution}, not about a leaderboard. When users search with the exact identifiers the documentation uses, lexical retrieval is perfect at rank 1 and free---BM25's P@1 = 1.000 on identifier queries is a result no embedding needs to beat. When users describe problems in their own words, lexical retrieval is structurally broken (P@1 = 0.250) and a small open-weight embedding model translates between the two registers, more than tripling Precision@1 (0.667) and nearly tripling MRR@10 (0.783). Overall, dense retrieval is the better default (nDCG@10 0.760 vs.\ 0.516), winning 16 of 36 head-to-heads and losing only 3---all to verbatim phrasing echoes---while costing ${\sim}8.5$\,ms rather than ${\sim}0.2$\,ms per query. The practical recipe that falls out of the measurement: inventory whether your users type identifiers or paraphrases; default to dense retrieval for mixed traffic; keep a lexical index anyway, because it anchors exact forms cheaply and is the natural partner for fusion. All data, code, per-query outputs, and both paper formats are released to make every number in this paper reproducible with one command.
+
+\begin{thebibliography}{13}\small
+\bibitem{bajaj2016} P.~Bajaj et al. MS MARCO: A Human Generated MAchine Reading COmprehension Dataset. \emph{arXiv:1611.09268}, 2016.
+\bibitem{cormack2009} G.~V. Cormack, C.~L.~A. Clarke, and S.~Buettcher. Reciprocal rank fusion outperforms Condorcet and individual rank learning methods. In \emph{Proc.\ SIGIR}, pp.~758--759, 2009.
+\bibitem{deerwester1990} S.~Deerwester, S.~T. Dumais, G.~W. Furnas, T.~K. Landauer, and R.~Harshman. Indexing by latent semantic analysis. \emph{Journal of the American Society for Information Science}, 41(6):391--407, 1990.
+\bibitem{kwiatkowski2019} T.~Kwiatkowski et al. Natural Questions: A Benchmark for Question Answering Research. \emph{Transactions of the Association for Computational Linguistics}, 7:453--466, 2019.
+\bibitem{karpukhin2020} V.~Karpukhin, B.~O{\u{g}}uz, S.~Min, P.~Lewis, L.~Wu, S.~Edunov, D.~Chen, and W.~Yih. Dense Passage Retrieval for Open-Domain Question Answering. In \emph{Proc.\ EMNLP}, pp.~6769--6781, 2020.
+\bibitem{manning2008} C.~D. Manning, P.~Raghavan, and H.~Sch\"utze. \emph{Introduction to Information Retrieval}. Cambridge University Press, 2008.
+\bibitem{mikolov2013} T.~Mikolov, I.~Sutskever, K.~Chen, G.~S. Corrado, and J.~Dean. Distributed Representations of Words and Phrases and their Compositionality. In \emph{Advances in Neural Information Processing Systems 26}, pp.~3111--3119, 2013.
+\bibitem{pennington2014} J.~Pennington, R.~Socher, and C.~D. Manning. GloVe: Global Vectors for Word Representation. In \emph{Proc.\ EMNLP}, pp.~1532--1543, 2014.
+\bibitem{reimers2019} N.~Reimers and I.~Gurevych. Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In \emph{Proc.\ EMNLP-IJCNLP}, pp.~3982--3992, 2019.
+\bibitem{robertson2009} S.~Robertson and H.~Zaragoza. The Probabilistic Relevance Framework: BM25 and Beyond. \emph{Foundations and Trends in Information Retrieval}, 3(4):333--389, 2009.
+\bibitem{salton1975} G.~Salton, A.~Wong, and C.~S. Yang. A Vector Space Model for Automatic Indexing of Documents. \emph{Communications of the ACM}, 18(11):613--620, 1975.
+\bibitem{thakur2021} N.~Thakur, N.~Reimers, A.~R\"uckle, A.~Srivastava, and I.~Gurevych. BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. In \emph{NeurIPS Datasets and Benchmarks Track}, 2021.
+\bibitem{xiao2023} S.~Xiao, Z.~Liu, P.~Zhang, and N.~Muennighoff. C-Pack: Packaged Resources To Advance General Chinese Embedding. \emph{arXiv:2309.07597}, 2023. Introduces the BGE embedding family used here (\code{bge-small-en-v1.5}, BAAI 2023).
+\end{thebibliography}
+
+\end{document}

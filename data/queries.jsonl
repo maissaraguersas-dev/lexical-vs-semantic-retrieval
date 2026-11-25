@@ -1,0 +1,36 @@
+{"id": "Q01", "query": "What does HTTP 429 mean and how should my client react?", "category": "lexical", "relevant": {"D011": 2, "D012": 2, "D018": 1}}
+{"id": "Q02", "query": "How do I debug a 504 ERR_GATEWAY_TIMEOUT?", "category": "lexical", "relevant": {"D022": 2, "D021": 1}}
+{"id": "Q03", "query": "What is the Retry-After header and where is it used?", "category": "lexical", "relevant": {"D012": 2, "D045": 1}}
+{"id": "Q04", "query": "What does the nmb_test_ key prefix indicate?", "category": "lexical", "relevant": {"D001": 2, "D019": 1}}
+{"id": "Q05", "query": "How do I interpret X-RateLimit-Remaining?", "category": "lexical", "relevant": {"D015": 2, "D011": 1}}
+{"id": "Q06", "query": "How do I verify the X-Nimbus-Signature header?", "category": "lexical", "relevant": {"D032": 2, "D035": 1}}
+{"id": "Q07", "query": "What is the maximum response size before ERR_PAYLOAD_TOO_LARGE?", "category": "lexical", "relevant": {"D030": 2}}
+{"id": "Q08", "query": "How does the Idempotency-Key header work?", "category": "lexical", "relevant": {"D023": 2, "D049": 1}}
+{"id": "Q09", "query": "Which Postgres versions are supported?", "category": "lexical", "relevant": {"D055": 2}}
+{"id": "Q10", "query": "How do I run a schema migration with nimbus db migrate?", "category": "lexical", "relevant": {"D052": 2, "D059": 1}}
+{"id": "Q11", "query": "What happens after 50 consecutive failed webhook deliveries?", "category": "lexical", "relevant": {"D040": 2, "D033": 1}}
+{"id": "Q12", "query": "How long are distributed traces retained?", "category": "lexical", "relevant": {"D072": 2}}
+{"id": "Q13", "query": "My script fires requests too fast and the server keeps refusing them. What is happening?", "category": "semantic", "relevant": {"D011": 2, "D013": 1}}
+{"id": "Q14", "query": "Are webhook notifications guaranteed to arrive exactly once?", "category": "semantic", "relevant": {"D031": 2, "D034": 1}}
+{"id": "Q15", "query": "How can I retry a failed payment request without charging the customer twice?", "category": "semantic", "relevant": {"D023": 2, "D024": 1}}
+{"id": "Q16", "query": "How do I stop my websocket connection from silently dying when nothing is sent?", "category": "semantic", "relevant": {"D085": 2}}
+{"id": "Q17", "query": "I ran a bad migration and need the database back to the exact second before it ran. Is that possible?", "category": "semantic", "relevant": {"D053": 2, "D059": 2}}
+{"id": "Q18", "query": "Our nightly job opens hundreds of database connections and crashes. What should we change?", "category": "semantic", "relevant": {"D051": 2, "D060": 1}}
+{"id": "Q19", "query": "Can I restrict which machines are allowed to use a given API key?", "category": "semantic", "relevant": {"D008": 2}}
+{"id": "Q20", "query": "We only want the on-call engineer paged when customers are actually affected. How?", "category": "semantic", "relevant": {"D075": 2, "D074": 1}}
+{"id": "Q21", "query": "One of our secret tokens just leaked into a public repository. What should we do?", "category": "semantic", "relevant": {"D007": 2, "D002": 1}}
+{"id": "Q22", "query": "Our metrics bill exploded after we started labeling every series with the customer id. Why?", "category": "semantic", "relevant": {"D073": 2}}
+{"id": "Q23", "query": "How do we release a new version to a small slice of traffic first?", "category": "semantic", "relevant": {"D062": 2, "D061": 1}}
+{"id": "Q24", "query": "What protects me if a whole datacenter full of my data is lost?", "category": "semantic", "relevant": {"D053": 2, "D059": 1}}
+{"id": "Q25", "query": "How should I make my retry logic safe?", "category": "ambiguous", "relevant": {"D024": 2, "D023": 2, "D012": 1}}
+{"id": "Q26", "query": "The deploy went green but users are seeing errors. What do I check?", "category": "ambiguous", "relevant": {"D067": 2, "D064": 2, "D029": 1}}
+{"id": "Q27", "query": "Which credentials should a background worker running on a server use?", "category": "ambiguous", "relevant": {"D005": 2, "D003": 1}}
+{"id": "Q28", "query": "How do I protect my webhook receiver from forged or duplicated payloads?", "category": "ambiguous", "relevant": {"D032": 2, "D035": 2, "D031": 1}}
+{"id": "Q29", "query": "I keep hitting my request quota - should I raise the limit or fix my client?", "category": "ambiguous", "relevant": {"D016": 2, "D012": 1, "D013": 1}}
+{"id": "Q30", "query": "The API says I'm not allowed, but my token is definitely valid. Why?", "category": "ambiguous", "relevant": {"D004": 2, "D003": 2, "D008": 1}}
+{"id": "Q31", "query": "What is the cleanest way to connect our cloud network to Nimbus services privately?", "category": "ambiguous", "relevant": {"D081": 2, "D088": 1}}
+{"id": "Q32", "query": "If a bug triples our usage overnight, what happens to the bill and to the service?", "category": "ambiguous", "relevant": {"D096": 2, "D100": 1, "D091": 1}}
+{"id": "Q33", "query": "My dashboard shows stale numbers right after I save changes. Why?", "category": "ambiguous", "relevant": {"D054": 2, "D091": 1}}
+{"id": "Q34", "query": "Is it safe to change the database schema while the app is serving traffic?", "category": "ambiguous", "relevant": {"D052": 2, "D064": 1}}
+{"id": "Q35", "query": "Which plan gives us a contractual uptime guarantee and single sign-on?", "category": "ambiguous", "relevant": {"D092": 2, "D099": 1}}
+{"id": "Q36", "query": "How can I tell whether an outage is our fault or the platform's?", "category": "ambiguous", "relevant": {"D029": 2, "D028": 1, "D022": 1}}

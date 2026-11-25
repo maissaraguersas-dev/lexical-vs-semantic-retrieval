@@ -1,0 +1,980 @@
+{
+  "Q01": {
+    "meta": {
+      "category": "lexical",
+      "query": "What does HTTP 429 mean and how should my client react?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D011": 2,
+        "D012": 6,
+        "D018": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D011": 2,
+        "D012": 4,
+        "D018": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D011": 9,
+        "D012": 3,
+        "D018": 1
+      }
+    }
+  },
+  "Q02": {
+    "meta": {
+      "category": "lexical",
+      "query": "How do I debug a 504 ERR_GATEWAY_TIMEOUT?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D022": 1,
+        "D021": 26
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D022": 1,
+        "D021": 26
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D022": 1,
+        "D021": 2
+      }
+    }
+  },
+  "Q03": {
+    "meta": {
+      "category": "lexical",
+      "query": "What is the Retry-After header and where is it used?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D012": 1,
+        "D045": 3
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D012": 1,
+        "D045": 2
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D012": 1,
+        "D045": 4
+      }
+    }
+  },
+  "Q04": {
+    "meta": {
+      "category": "lexical",
+      "query": "What does the nmb_test_ key prefix indicate?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D001": 1,
+        "D019": 4
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D001": 1,
+        "D019": 4
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D001": 1,
+        "D019": 2
+      }
+    }
+  },
+  "Q05": {
+    "meta": {
+      "category": "lexical",
+      "query": "How do I interpret X-RateLimit-Remaining?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D015": 1,
+        "D011": 18
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D015": 1,
+        "D011": 16
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D015": 1,
+        "D011": 6
+      }
+    }
+  },
+  "Q06": {
+    "meta": {
+      "category": "lexical",
+      "query": "How do I verify the X-Nimbus-Signature header?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D032": 1,
+        "D035": 90
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D032": 1,
+        "D035": 90
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D032": 1,
+        "D035": 4
+      }
+    }
+  },
+  "Q07": {
+    "meta": {
+      "category": "lexical",
+      "query": "What is the maximum response size before ERR_PAYLOAD_TOO_LARGE?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D030": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D030": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D030": 1
+      }
+    }
+  },
+  "Q08": {
+    "meta": {
+      "category": "lexical",
+      "query": "How does the Idempotency-Key header work?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D023": 1,
+        "D049": 2
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D023": 1,
+        "D049": 2
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D023": 2,
+        "D049": 1
+      }
+    }
+  },
+  "Q09": {
+    "meta": {
+      "category": "lexical",
+      "query": "Which Postgres versions are supported?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D055": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D055": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D055": 1
+      }
+    }
+  },
+  "Q10": {
+    "meta": {
+      "category": "lexical",
+      "query": "How do I run a schema migration with nimbus db migrate?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D052": 1,
+        "D059": 2
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D052": 1,
+        "D059": 2
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D052": 1,
+        "D059": 3
+      }
+    }
+  },
+  "Q11": {
+    "meta": {
+      "category": "lexical",
+      "query": "What happens after 50 consecutive failed webhook deliveries?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D040": 1,
+        "D033": 2
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D040": 1,
+        "D033": 2
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D040": 2,
+        "D033": 1
+      }
+    }
+  },
+  "Q12": {
+    "meta": {
+      "category": "lexical",
+      "query": "How long are distributed traces retained?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D072": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D072": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D072": 1
+      }
+    }
+  },
+  "Q13": {
+    "meta": {
+      "category": "semantic",
+      "query": "My script fires requests too fast and the server keeps refusing them. What is happening?"
+    },
+    "bm25": {
+      "first_relevant_rank": 17,
+      "relevant_doc_ranks": {
+        "D011": 17,
+        "D013": 31
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 15,
+      "relevant_doc_ranks": {
+        "D011": 15,
+        "D013": 39
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D011": 2,
+        "D013": 47
+      }
+    }
+  },
+  "Q14": {
+    "meta": {
+      "category": "semantic",
+      "query": "Are webhook notifications guaranteed to arrive exactly once?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D031": 3,
+        "D034": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D031": 3,
+        "D034": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D031": 1,
+        "D034": 6
+      }
+    }
+  },
+  "Q15": {
+    "meta": {
+      "category": "semantic",
+      "query": "How can I retry a failed payment request without charging the customer twice?"
+    },
+    "bm25": {
+      "first_relevant_rank": 18,
+      "relevant_doc_ranks": {
+        "D023": 57,
+        "D024": 18
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 5,
+      "relevant_doc_ranks": {
+        "D023": 55,
+        "D024": 5
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 5,
+      "relevant_doc_ranks": {
+        "D023": 27,
+        "D024": 5
+      }
+    }
+  },
+  "Q16": {
+    "meta": {
+      "category": "semantic",
+      "query": "How do I stop my websocket connection from silently dying when nothing is sent?"
+    },
+    "bm25": {
+      "first_relevant_rank": 5,
+      "relevant_doc_ranks": {
+        "D085": 5
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 4,
+      "relevant_doc_ranks": {
+        "D085": 4
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D085": 1
+      }
+    }
+  },
+  "Q17": {
+    "meta": {
+      "category": "semantic",
+      "query": "I ran a bad migration and need the database back to the exact second before it ran. Is that possible?"
+    },
+    "bm25": {
+      "first_relevant_rank": 13,
+      "relevant_doc_ranks": {
+        "D053": 20,
+        "D059": 13
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 9,
+      "relevant_doc_ranks": {
+        "D053": 9,
+        "D059": 12
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D053": 4,
+        "D059": 2
+      }
+    }
+  },
+  "Q18": {
+    "meta": {
+      "category": "semantic",
+      "query": "Our nightly job opens hundreds of database connections and crashes. What should we change?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D051": 1,
+        "D060": 10
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D051": 1,
+        "D060": 11
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D051": 2,
+        "D060": 1
+      }
+    }
+  },
+  "Q19": {
+    "meta": {
+      "category": "semantic",
+      "query": "Can I restrict which machines are allowed to use a given API key?"
+    },
+    "bm25": {
+      "first_relevant_rank": 11,
+      "relevant_doc_ranks": {
+        "D008": 11
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 11,
+      "relevant_doc_ranks": {
+        "D008": 11
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D008": 1
+      }
+    }
+  },
+  "Q20": {
+    "meta": {
+      "category": "semantic",
+      "query": "We only want the on-call engineer paged when customers are actually affected. How?"
+    },
+    "bm25": {
+      "first_relevant_rank": 20,
+      "relevant_doc_ranks": {
+        "D075": 20,
+        "D074": 39
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 18,
+      "relevant_doc_ranks": {
+        "D075": 18,
+        "D074": 43
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D075": 1,
+        "D074": 67
+      }
+    }
+  },
+  "Q21": {
+    "meta": {
+      "category": "semantic",
+      "query": "One of our secret tokens just leaked into a public repository. What should we do?"
+    },
+    "bm25": {
+      "first_relevant_rank": 21,
+      "relevant_doc_ranks": {
+        "D007": 21,
+        "D002": 48
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 17,
+      "relevant_doc_ranks": {
+        "D007": 17,
+        "D002": 48
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D007": 1,
+        "D002": 55
+      }
+    }
+  },
+  "Q22": {
+    "meta": {
+      "category": "semantic",
+      "query": "Our metrics bill exploded after we started labeling every series with the customer id. Why?"
+    },
+    "bm25": {
+      "first_relevant_rank": 32,
+      "relevant_doc_ranks": {
+        "D073": 32
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 31,
+      "relevant_doc_ranks": {
+        "D073": 31
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D073": 1
+      }
+    }
+  },
+  "Q23": {
+    "meta": {
+      "category": "semantic",
+      "query": "How do we release a new version to a small slice of traffic first?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D062": 1,
+        "D061": 88
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D062": 1,
+        "D061": 88
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D062": 1,
+        "D061": 45
+      }
+    }
+  },
+  "Q24": {
+    "meta": {
+      "category": "semantic",
+      "query": "What protects me if a whole datacenter full of my data is lost?"
+    },
+    "bm25": {
+      "first_relevant_rank": 28,
+      "relevant_doc_ranks": {
+        "D053": 28,
+        "D059": 77
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 27,
+      "relevant_doc_ranks": {
+        "D053": 27,
+        "D059": 77
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 5,
+      "relevant_doc_ranks": {
+        "D053": 5,
+        "D059": 28
+      }
+    }
+  },
+  "Q25": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "How should I make my retry logic safe?"
+    },
+    "bm25": {
+      "first_relevant_rank": 4,
+      "relevant_doc_ranks": {
+        "D024": 5,
+        "D023": 29,
+        "D012": 4
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D024": 3,
+        "D023": 29,
+        "D012": 4
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D024": 1,
+        "D023": 26,
+        "D012": 2
+      }
+    }
+  },
+  "Q26": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "The deploy went green but users are seeing errors. What do I check?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D067": 49,
+        "D064": 1,
+        "D029": 4
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D067": 59,
+        "D064": 1,
+        "D029": 4
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D067": 5,
+        "D064": 4,
+        "D029": 3
+      }
+    }
+  },
+  "Q27": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "Which credentials should a background worker running on a server use?"
+    },
+    "bm25": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D005": 2,
+        "D003": 30
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D005": 3,
+        "D003": 34
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D005": 3,
+        "D003": 12
+      }
+    }
+  },
+  "Q28": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "How do I protect my webhook receiver from forged or duplicated payloads?"
+    },
+    "bm25": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D032": 2,
+        "D035": 15,
+        "D031": 17
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D032": 3,
+        "D035": 16,
+        "D031": 14
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D032": 2,
+        "D035": 1,
+        "D031": 3
+      }
+    }
+  },
+  "Q29": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "I keep hitting my request quota - should I raise the limit or fix my client?"
+    },
+    "bm25": {
+      "first_relevant_rank": 4,
+      "relevant_doc_ranks": {
+        "D016": 4,
+        "D012": 65,
+        "D013": 20
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D016": 3,
+        "D012": 41,
+        "D013": 23
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 3,
+      "relevant_doc_ranks": {
+        "D016": 3,
+        "D012": 12,
+        "D013": 30
+      }
+    }
+  },
+  "Q30": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "The API says I'm not allowed, but my token is definitely valid. Why?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D004": 1,
+        "D003": 19,
+        "D008": 5
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D004": 1,
+        "D003": 21,
+        "D008": 4
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 7,
+      "relevant_doc_ranks": {
+        "D004": 8,
+        "D003": 48,
+        "D008": 7
+      }
+    }
+  },
+  "Q31": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "What is the cleanest way to connect our cloud network to Nimbus services privately?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D081": 1,
+        "D088": 5
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D081": 1,
+        "D088": 5
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D081": 1,
+        "D088": 5
+      }
+    }
+  },
+  "Q32": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "If a bug triples our usage overnight, what happens to the bill and to the service?"
+    },
+    "bm25": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D096": 53,
+        "D100": 85,
+        "D091": 1
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D096": 37,
+        "D100": 49,
+        "D091": 1
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D096": 1,
+        "D100": 8,
+        "D091": 3
+      }
+    }
+  },
+  "Q33": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "My dashboard shows stale numbers right after I save changes. Why?"
+    },
+    "bm25": {
+      "first_relevant_rank": 7,
+      "relevant_doc_ranks": {
+        "D054": 65,
+        "D091": 7
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 9,
+      "relevant_doc_ranks": {
+        "D054": 65,
+        "D091": 9
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D054": 9,
+        "D091": 2
+      }
+    }
+  },
+  "Q34": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "Is it safe to change the database schema while the app is serving traffic?"
+    },
+    "bm25": {
+      "first_relevant_rank": 4,
+      "relevant_doc_ranks": {
+        "D052": 4,
+        "D064": 74
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 2,
+      "relevant_doc_ranks": {
+        "D052": 2,
+        "D064": 80
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D052": 1,
+        "D064": 23
+      }
+    }
+  },
+  "Q35": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "Which plan gives us a contractual uptime guarantee and single sign-on?"
+    },
+    "bm25": {
+      "first_relevant_rank": 6,
+      "relevant_doc_ranks": {
+        "D092": 6,
+        "D099": 38
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 4,
+      "relevant_doc_ranks": {
+        "D092": 4,
+        "D099": 42
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 5,
+      "relevant_doc_ranks": {
+        "D092": 5,
+        "D099": 7
+      }
+    }
+  },
+  "Q36": {
+    "meta": {
+      "category": "ambiguous",
+      "query": "How can I tell whether an outage is our fault or the platform's?"
+    },
+    "bm25": {
+      "first_relevant_rank": 11,
+      "relevant_doc_ranks": {
+        "D029": 18,
+        "D028": 85,
+        "D022": 11
+      }
+    },
+    "tfidf": {
+      "first_relevant_rank": 11,
+      "relevant_doc_ranks": {
+        "D029": 14,
+        "D028": 85,
+        "D022": 11
+      }
+    },
+    "dense": {
+      "first_relevant_rank": 1,
+      "relevant_doc_ranks": {
+        "D029": 1,
+        "D028": 28,
+        "D022": 5
+      }
+    }
+  }
+}

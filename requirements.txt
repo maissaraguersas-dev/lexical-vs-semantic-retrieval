@@ -1,0 +1,13 @@
+rank-bm25>=0.2.2
+scikit-learn>=1.3
+numpy>=1.24
+
+# Dense embedding backend (primary path): deterministic local ONNX inference,
+# no network access and no paid API at query time. First run downloads the
+# ~35 MB BAAI/bge-small-en-v1.5 model once.
+fastembed>=0.9.0
+
+# If fastembed is not installed (or the model cannot be fetched), src/retrievers.py
+# automatically falls back to a deterministic LSA dense variant built from
+# scikit-learn only (TF-IDF -> TruncatedSVD, random_state=42), so the benchmark
+# runs with just the three packages above.
